@@ -1,6 +1,7 @@
 package com.api.solarenergy.controllers;
 
 import com.api.solarenergy.dtos.CreatePlantDto;
+import com.api.solarenergy.dtos.ReadPlantsCounts;
 import com.api.solarenergy.models.PlantModel;
 import com.api.solarenergy.services.PlantService;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +43,13 @@ public class PlantController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
         }
         return ResponseEntity.status(HttpStatus.OK).body(plantModelOptional.get());
+    }
+
+    @GetMapping("/counts")
+    public ResponseEntity<ReadPlantsCounts> getPlantCounts(){
+        var activePlantCount = plantService.getActivePlantCounts();
+        var inactivePlantCount = plantService.getInactivePlantCounts();
+        return ResponseEntity.status(HttpStatus.OK).body(new ReadPlantsCounts(activePlantCount, inactivePlantCount));
     }
 
     @DeleteMapping("/{id}")

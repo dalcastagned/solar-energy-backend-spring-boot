@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface PlantRepository extends JpaRepository<PlantModel, UUID> {}
+public interface PlantRepository extends JpaRepository<PlantModel, UUID> {
+    int countByActive(boolean active);
+}

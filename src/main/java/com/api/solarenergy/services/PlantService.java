@@ -30,6 +30,14 @@ public class PlantService {
         return plantRepository.findById(id);
     }
 
+    public int getActivePlantCounts() {
+        return plantRepository.countByActive(true);
+    }
+
+    public int getInactivePlantCounts() {
+        return plantRepository.countByActive(false);
+    }
+
     @Transactional
     public void delete(PlantModel plantModel) {
         plantRepository.delete(plantModel);
