@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,8 +24,12 @@ public class PlantService {
         return plantRepository.save(plantModel).getId();
     }
 
-    public Page<PlantModel> findAll(Pageable pageable) {
-        return plantRepository.findAll(pageable);
+    public Page<PlantModel> findAll(Pageable pageable, String filter) {
+        if (filter == null) {
+            return plantRepository.findAll(pageable);
+        } else {
+            return plantRepository.findAllPaginatedAndFiltered(filter.toLowerCase(), pageable);
+        }
     }
 
     public Optional<PlantModel> findById(UUID id) {

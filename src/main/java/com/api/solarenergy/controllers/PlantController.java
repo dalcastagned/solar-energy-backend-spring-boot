@@ -39,8 +39,8 @@ public class PlantController {
     }
 
     @GetMapping()
-    public ResponseEntity<ReadPlantsDto> getAllPlants(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
-        var plants = plantService.findAll(pageable);
+    public ResponseEntity<ReadPlantsDto> getAllPlants(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) String filter){
+        var plants = plantService.findAll(pageable, filter);
         var plantsDto = plants.getContent().stream().map(plant -> {
             var plantDto = new ReadPlantDto();
             BeanUtils.copyProperties(plant, plantDto);
