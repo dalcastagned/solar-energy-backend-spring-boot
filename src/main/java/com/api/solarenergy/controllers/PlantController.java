@@ -31,7 +31,7 @@ public class PlantController {
         this.plantService = plantService;
     }
 
-    @PostMapping()
+    @PostMapping(produces="application/json")
     public ResponseEntity<Object> createPlant(@RequestBody @Valid CreatePlantDto createPlantDto){
         var plantModel = new PlantModel();
         BeanUtils.copyProperties(createPlantDto, plantModel);
