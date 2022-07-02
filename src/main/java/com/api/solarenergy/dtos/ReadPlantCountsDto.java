@@ -1,7 +1,7 @@
 package com.api.solarenergy.dtos;
 
-public class ReadPlantsCounts {
-    public ReadPlantsCounts(int activePlants, int inactivePlants) {
+public class ReadPlantCountsDto {
+    public ReadPlantCountsDto(int activePlants, int inactivePlants) {
         this.activePlants = activePlants;
         this.inactivePlants = inactivePlants;
     }

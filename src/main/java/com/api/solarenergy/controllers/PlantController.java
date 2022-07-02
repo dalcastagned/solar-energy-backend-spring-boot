@@ -2,7 +2,7 @@ package com.api.solarenergy.controllers;
 
 import com.api.solarenergy.dtos.CreatePlantDto;
 import com.api.solarenergy.dtos.ReadPlantDto;
-import com.api.solarenergy.dtos.ReadPlantsCounts;
+import com.api.solarenergy.dtos.ReadPlantsCountsDto;
 import com.api.solarenergy.models.PlantModel;
 import com.api.solarenergy.services.PlantService;
 import org.springframework.beans.BeanUtils;
@@ -49,10 +49,10 @@ public class PlantController {
     }
 
     @GetMapping("/counts")
-    public ResponseEntity<ReadPlantsCounts> getPlantCounts(){
+    public ResponseEntity<ReadPlantsCountsDto> getPlantCounts(){
         var activePlantCount = plantService.getActivePlantCounts();
         var inactivePlantCount = plantService.getInactivePlantCounts();
-        return ResponseEntity.status(HttpStatus.OK).body(new ReadPlantsCounts(activePlantCount, inactivePlantCount));
+        return ResponseEntity.status(HttpStatus.OK).body(new ReadPlantsCountsDto(activePlantCount, inactivePlantCount));
     }
 
     @DeleteMapping("/{id}")
