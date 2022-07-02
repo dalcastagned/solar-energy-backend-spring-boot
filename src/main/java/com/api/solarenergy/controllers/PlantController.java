@@ -2,10 +2,15 @@ package com.api.solarenergy.controllers;
 
 import com.api.solarenergy.dtos.CreatePlantDto;
 import com.api.solarenergy.dtos.ReadPlantDto;
-import com.api.solarenergy.dtos.ReadPlantsCountsDto;
+import com.api.solarenergy.dtos.ReadPlantCountsDto;
+import com.api.solarenergy.dtos.ReadPlantsDto;
 import com.api.solarenergy.models.PlantModel;
 import com.api.solarenergy.services.PlantService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +19,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,8 +39,14 @@ public class PlantController {
     }
 
     @GetMapping()
-    public ResponseEntity<Collection<PlantModel>> getAllPlants(){
-        return ResponseEntity.status(HttpStatus.OK).body(plantService.findAll());
+    public ResponseEntity<ReadPlantsDto> getAllPlants(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+        var plants = plantService.findAll(pageable);
+        var plantsDto = plants.getContent().stream().map(plant -> {
+            var plantDto = new ReadPlantDto();
+            BeanUtils.copyProperties(plant, plantDto);
+            return plantDto;
+        }).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(new ReadPlantsDto(plantsDto, plants.getTotalPages(), plants.getNumber() + 1));
     }
 
     @GetMapping("/{id}")
@@ -49,10 +61,10 @@ public class PlantController {
     }
 
     @GetMapping("/counts")
-    public ResponseEntity<ReadPlantsCountsDto> getPlantCounts(){
+    public ResponseEntity<ReadPlantCountsDto> getPlantCounts(){
         var activePlantCount = plantService.getActivePlantCounts();
         var inactivePlantCount = plantService.getInactivePlantCounts();
-        return ResponseEntity.status(HttpStatus.OK).body(new ReadPlantsCountsDto(activePlantCount, inactivePlantCount));
+        return ResponseEntity.status(HttpStatus.OK).body(new ReadPlantCountsDto(activePlantCount, inactivePlantCount));
     }
 
     @DeleteMapping("/{id}")

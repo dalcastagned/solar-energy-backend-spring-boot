@@ -2,10 +2,11 @@ package com.api.solarenergy.services;
 
 import com.api.solarenergy.models.PlantModel;
 import com.api.solarenergy.repositories.PlantRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,8 +23,8 @@ public class PlantService {
         return plantRepository.save(plantModel).getId();
     }
 
-    public Collection<PlantModel> findAll() {
-        return plantRepository.findAll();
+    public Page<PlantModel> findAll(Pageable pageable) {
+        return plantRepository.findAll(pageable);
     }
 
     public Optional<PlantModel> findById(UUID id) {
