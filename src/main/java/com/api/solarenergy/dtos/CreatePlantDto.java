@@ -1,15 +1,16 @@
 package com.api.solarenergy.dtos;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CreatePlantDto {
-    @NotBlank
+    @NotBlank(message = "Nickname is required")
     private String nickname;
-    @NotBlank
+    @NotBlank(message = "Place is required")
     private String place;
-    @NotBlank
+    @NotBlank(message = "Brand is required")
     private String brand;
-    @NotBlank
+    @NotBlank(message = "Model is required")
     private String model;
     private Boolean active;
 
