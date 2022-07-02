@@ -1,6 +1,7 @@
 package com.api.solarenergy.controllers;
 
 import com.api.solarenergy.dtos.CreatePlantDto;
+import com.api.solarenergy.dtos.ReadPlantDto;
 import com.api.solarenergy.dtos.ReadPlantsCounts;
 import com.api.solarenergy.models.PlantModel;
 import com.api.solarenergy.services.PlantService;
@@ -42,7 +43,9 @@ public class PlantController {
         if(!plantModelOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(plantModelOptional.get());
+        var readPlantDto = new ReadPlantDto();
+        BeanUtils.copyProperties(plantModelOptional.get(), readPlantDto);
+        return ResponseEntity.status(HttpStatus.OK).body(readPlantDto);
     }
 
     @GetMapping("/counts")
