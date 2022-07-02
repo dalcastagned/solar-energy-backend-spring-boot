@@ -22,13 +22,16 @@ public class PlantService {
         return plantRepository.save(plantModel).getId();
     }
 
-    @Transactional
     public Collection<PlantModel> findAll() {
         return plantRepository.findAll();
     }
 
-    @Transactional
     public Optional<PlantModel> findById(UUID id) {
         return plantRepository.findById(id);
+    }
+
+    @Transactional
+    public void delete(PlantModel plantModel) {
+        plantRepository.delete(plantModel);
     }
 }

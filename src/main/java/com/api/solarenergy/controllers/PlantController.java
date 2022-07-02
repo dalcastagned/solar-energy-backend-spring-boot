@@ -44,4 +44,13 @@ public class PlantController {
         return ResponseEntity.status(HttpStatus.OK).body(plantModelOptional.get());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletePlantById(@PathVariable("id") UUID id){
+        Optional<PlantModel> plantModelOptional = plantService.findById(id);
+        if(!plantModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
+        }
+        plantService.delete(plantModelOptional.get());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
+    }
 }
