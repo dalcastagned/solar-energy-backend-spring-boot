@@ -53,4 +53,15 @@ public class PlantController {
         plantService.delete(plantModelOptional.get());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updatePlantById(@PathVariable("id") UUID id, @RequestBody @Valid CreatePlantDto createPlantDto){
+        Optional<PlantModel> plantModelOptional = plantService.findById(id);
+        if(!plantModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
+        }
+        var plantModel = plantModelOptional.get();
+        BeanUtils.copyProperties(createPlantDto, plantModel);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(plantService.save(plantModel));
+    }
 }
