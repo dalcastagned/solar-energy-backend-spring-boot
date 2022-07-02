@@ -5,6 +5,7 @@ import com.api.solarenergy.repositories.PlantRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.UUID;
 
 @Service
@@ -18,5 +19,10 @@ public class PlantService {
     @Transactional
     public UUID save(PlantModel plantModel) {
         return plantRepository.save(plantModel).getId();
+    }
+
+    @Transactional
+    public Collection<PlantModel> findAll() {
+        return plantRepository.findAll();
     }
 }

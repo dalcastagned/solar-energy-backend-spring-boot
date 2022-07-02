@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -25,5 +26,10 @@ public class PlantController {
         var plantModel = new PlantModel();
         BeanUtils.copyProperties(createPlantDto, plantModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(plantService.save(plantModel));
+    }
+
+    @GetMapping()
+    public ResponseEntity<Collection<PlantModel>> getAllPlants(){
+        return ResponseEntity.status(HttpStatus.OK).body(plantService.findAll());
     }
 }
