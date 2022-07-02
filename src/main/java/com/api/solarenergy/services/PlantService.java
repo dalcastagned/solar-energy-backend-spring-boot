@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,5 +25,10 @@ public class PlantService {
     @Transactional
     public Collection<PlantModel> findAll() {
         return plantRepository.findAll();
+    }
+
+    @Transactional
+    public Optional<PlantModel> findById(UUID id) {
+        return plantRepository.findById(id);
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -32,4 +34,14 @@ public class PlantController {
     public ResponseEntity<Collection<PlantModel>> getAllPlants(){
         return ResponseEntity.status(HttpStatus.OK).body(plantService.findAll());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getPlantById(@PathVariable("id") UUID id){
+        Optional<PlantModel> plantModelOptional = plantService.findById(id);
+        if(!plantModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(plantModelOptional.get());
+    }
+
 }
