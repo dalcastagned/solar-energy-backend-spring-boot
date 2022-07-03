@@ -23,4 +23,8 @@ public class GenerationService {
     public Optional<GenerationModel> findById(UUID id) {
         return generationRepository.findById(id);
     }
+
+    public void delete(GenerationModel generationModel) {
+        generationRepository.delete(generationModel);
+    }
 }
