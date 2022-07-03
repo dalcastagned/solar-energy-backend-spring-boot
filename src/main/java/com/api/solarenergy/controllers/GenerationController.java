@@ -2,16 +2,23 @@ package com.api.solarenergy.controllers;
 
 import com.api.solarenergy.dtos.CreateGenerationDto;
 import com.api.solarenergy.dtos.ReadGenerationDto;
+import com.api.solarenergy.dtos.ReadGenerationsDto;
 import com.api.solarenergy.models.GenerationModel;
 import com.api.solarenergy.services.GenerationService;
 import com.api.solarenergy.services.PlantService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -35,6 +42,21 @@ public class GenerationController {
         BeanUtils.copyProperties(createGenerationDto, generationModel);
         generationModel.setPlant(plantModel.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(generationService.save(generationModel));
+    }
+
+    @GetMapping("/{plantId}/generation")
+    public ResponseEntity<Object> getAllGenerations(@PathVariable("plantId") UUID plantId, @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
+        var plantModel = plantService.findById(plantId);
+        if (!plantService.findById(plantId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
+        }
+        var generations = generationService.findAll(plantId, pageable, startDate, endDate);
+        var generationsDto = generations.getContent().stream().map(generation -> {
+            var generationDto = new ReadGenerationDto();
+            BeanUtils.copyProperties(generation, generationDto);
+            return generationDto;
+        }).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(new ReadGenerationsDto(generationsDto, generations.getTotalPages(), generations.getNumber() + 1));
     }
 
     @GetMapping("/{plantId}/generation/{generationId}")
