@@ -1,6 +1,7 @@
 package com.api.solarenergy.controllers;
 
 import com.api.solarenergy.dtos.CreateGenerationDto;
+import com.api.solarenergy.dtos.ReadGenerationDto;
 import com.api.solarenergy.models.GenerationModel;
 import com.api.solarenergy.services.GenerationService;
 import com.api.solarenergy.services.PlantService;
@@ -34,5 +35,20 @@ public class GenerationController {
         BeanUtils.copyProperties(createGenerationDto, generationModel);
         generationModel.setPlant(plantModel.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(generationService.save(generationModel));
+    }
+
+    @GetMapping("/{plantId}/generation/{generationId}")
+    public ResponseEntity<Object> getGenerationById(@PathVariable("plantId") UUID plantId, @PathVariable("generationId") UUID generationId){
+        var plantModel = plantService.findById(plantId);
+        if (!plantService.findById(plantId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
+        }
+        var generationModel = generationService.findById(generationId);
+        if (!generationService.findById(generationId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Generation not found");
+        }
+        var generationDto = new ReadGenerationDto();
+        BeanUtils.copyProperties(generationModel.get(), generationDto);
+        return ResponseEntity.status(HttpStatus.OK).body(generationDto);
     }
 }
