@@ -65,4 +65,19 @@ public class GenerationController {
         generationService.delete(generationModel.get());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
     }
+
+    @PutMapping("/{plantId}/generation/{generationId}")
+    public ResponseEntity<Object> updateGenerationById(@PathVariable("plantId") UUID plantId, @PathVariable("generationId") UUID generationId, @RequestBody @Valid CreateGenerationDto createGenerationDto){
+        var plantModel = plantService.findById(plantId);
+        if (!plantService.findById(plantId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plant not found");
+        }
+        var generationModel = generationService.findById(generationId);
+        if (!generationService.findById(generationId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Generation not found");
+        }
+        BeanUtils.copyProperties(createGenerationDto, generationModel.get());
+        generationModel.get().setPlant(plantModel.get());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(generationService.save(generationModel.get()));
+    }
 }
