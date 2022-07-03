@@ -1,5 +1,7 @@
 package com.api.solarenergy.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ public class GenerationModel implements Serializable {
     private LocalDateTime date;
     @Column(nullable = false)
     private Double generatePower;
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(name = "plant_id", nullable = false)
     private PlantModel plant;

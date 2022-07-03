@@ -3,6 +3,7 @@ package com.api.solarenergy.controllers;
 import com.api.solarenergy.dtos.CreateGenerationDto;
 import com.api.solarenergy.dtos.ReadGenerationDto;
 import com.api.solarenergy.dtos.ReadGenerationsDto;
+import com.api.solarenergy.dtos.ReadMonthGenerationsDto;
 import com.api.solarenergy.models.GenerationModel;
 import com.api.solarenergy.services.GenerationService;
 import com.api.solarenergy.services.PlantService;
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -101,5 +106,24 @@ public class GenerationController {
         BeanUtils.copyProperties(createGenerationDto, generationModel.get());
         generationModel.get().setPlant(plantModel.get());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(generationService.save(generationModel.get()));
+    }
+
+    @GetMapping("/generations-last-12-months")
+    public ResponseEntity<Object> getGenerationsLast12Months(){
+        LocalDateTime startDate = LocalDateTime.now().minusMonths(11).withDayOfMonth(1);
+        LocalDateTime endDate = LocalDateTime.now();
+        var generations = generationService.findAllByDate(startDate, endDate);
+        var generationsDto = new ArrayList<ReadMonthGenerationsDto>();
+
+        for (int i = 0; i<12; i++) {
+            var startDateMonth = startDate.plusMonths(i);
+            var endDateMonth = startDate.plusMonths(i+1).withDayOfMonth(1);
+            var monthGenerations = generations.stream().filter(generation -> generation.getDate().isAfter(startDateMonth) && generation.getDate().isBefore(endDateMonth)).collect(Collectors.toList());
+            var month = startDateMonth.getMonth().getDisplayName(TextStyle.SHORT, Locale.getDefault()) + "/" + startDateMonth.getYear();
+            var sum = monthGenerations.stream().mapToDouble(generation -> generation.getGeneratePower()).sum();
+
+            generationsDto.add(new ReadMonthGenerationsDto(month, sum));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(generationsDto);
     }
 }

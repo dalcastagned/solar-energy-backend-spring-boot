@@ -1,6 +1,8 @@
 package com.api.solarenergy.services;
 
+import com.api.solarenergy.dtos.ReadGenerationDto;
 import com.api.solarenergy.models.GenerationModel;
+import com.api.solarenergy.models.PlantModel;
 import com.api.solarenergy.repositories.GenerationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,7 +46,12 @@ public class GenerationService {
         return generationRepository.findById(id);
     }
 
+    @Transactional
     public void delete(GenerationModel generationModel) {
         generationRepository.delete(generationModel);
+    }
+
+    public Collection<GenerationModel> findAllByDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return generationRepository.findAllByDate(startDate, endDate);
     }
 }

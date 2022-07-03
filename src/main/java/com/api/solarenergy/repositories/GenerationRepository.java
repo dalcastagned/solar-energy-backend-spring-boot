@@ -1,5 +1,6 @@
 package com.api.solarenergy.repositories;
 
+import com.api.solarenergy.dtos.ReadGenerationDto;
 import com.api.solarenergy.models.GenerationModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.UUID;
 
 public interface GenerationRepository extends JpaRepository<GenerationModel, UUID> {
@@ -20,5 +22,8 @@ public interface GenerationRepository extends JpaRepository<GenerationModel, UUI
     Page<GenerationModel> findAllByPlantIdAndLessThanEndDate(UUID plantId, LocalDateTime endDate, Pageable pageable);
 
     Page<GenerationModel> findAllByPlantId(UUID plantId, Pageable pageable);
+
+    @Query(value = "SELECT * FROM generation WHERE date BETWEEN ?1 AND ?2 ORDER BY date ASC", nativeQuery = true)
+    Collection<GenerationModel> findAllByDate(LocalDateTime startDate, LocalDateTime endDate);
 }
 
