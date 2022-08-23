@@ -3,7 +3,7 @@
 
 ## Descrição do Projeto
 
-<p align="left">API para CRUD de plantas solares e gerações. Criada para reforçar o aprendizado com a estrutura NodeJs.</p>
+<p align="left">API para CRUD de plantas solares e gerações. Criada para reforçar o aprendizado com a estrutura Spring-Boot.</p>
 
 ## 🛠 Tecnologias
 
